@@ -59,4 +59,22 @@ describe('OrangeHRM - Login Feature (Quiz 3)', () => {
     cy.get('button[type="submit"]').click();
     cy.contains('.oxd-input-group__message', 'Required').should('be.visible');
   });
+
+  // Test Case 7: Forgot your password?
+  it('Click Forgot your password link', () => {
+    cy.contains('p.orangehrm-login-forgot-header', /Forgot your password\??/i, { timeout: 10000 })
+      .scrollIntoView()
+      .should('be.visible')
+      .click({ force: true });
+
+    cy.location('pathname').then((path) => {
+      if (path.includes('/auth/login')) {
+        cy.get('.orangehrm-login-forgot').scrollIntoView().should('be.visible').click({ force: true });
+      }
+    });
+
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/web/index.php/auth/requestPasswordResetCode');
+
+    cy.contains('h6, .oxd-text--h6', 'Reset Password', { matchCase: false, timeout: 10000 }).should('be.visible');
+  });
 });
