@@ -1,5 +1,3 @@
-// pages/loginPage.js
-
 class LoginPage {
   // Locators
   locators = {

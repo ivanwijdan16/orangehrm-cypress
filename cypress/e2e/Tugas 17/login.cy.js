@@ -1,4 +1,3 @@
-// Import LoginPage - path dari dalam cypress folder
 import LoginPage from '../../support/pages/loginPage';
 
 describe('OrangeHRM - Login Feature with POM', () => {
