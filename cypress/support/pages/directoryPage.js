@@ -6,7 +6,7 @@ class DirectoryPage {
     jobDropdown: '.oxd-select-text-input',
     locationDropdown: '.oxd-select-text',
     searchButton: 'button[type="submit"]',
-    resetButton: 'button[type="button"]',
+    resetButton: '.oxd-form-actions button',
     employeeCards: '.oxd-sheet',
     employeeName: '.orangehrm-directory-card-header',
     noRecordsMessage: '.orangehrm-horizontal-padding span',
@@ -101,14 +101,12 @@ class DirectoryPage {
   }
 
   clickReset() {
-    cy.get(this.locators.resetButton, { timeout: 10000 })
-      .contains('Reset')
-      .should('be.visible')
-      .click();
-    
-    cy.wait(1000);
-    return this;
-  }
+  cy.contains(this.locators.resetButton, 'Reset', { timeout: 10000 })
+    .should('be.visible')
+    .click();
+  return this;
+}
+
 
   verifyPageLoaded() {
     cy.url({ timeout: 15000 }).should('include', '/directory/viewDirectory');
