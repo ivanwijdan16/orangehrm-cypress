@@ -183,13 +183,10 @@ describe('SC_003 - Directory Functionality', () => {
   it('TC-021: Reset search filters', () => {
     directoryPage.visit();
     
-    // Set some filters
     directoryPage.selectJobTitle(1);
     
-    // Click reset
     directoryPage.clickReset();
     
-    // Verify input cleared
     cy.get('input[placeholder="Type for hints..."]').should('have.value', '');
   });
 

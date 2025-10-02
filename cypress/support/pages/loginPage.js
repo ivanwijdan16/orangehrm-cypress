@@ -21,10 +21,9 @@ class LoginPage {
       timeout: 30000
     });
     
-    // Pastikan URL sudah benar dan page sudah load
     cy.url().should('include', '/auth/login');
     cy.get(this.locators.usernameInput, { timeout: 15000 }).should('be.visible');
-    cy.wait(500); // Tunggu sebentar untuk stabilitas
+    cy.wait(1000);
   }
 
   fillUsername(username) {
