@@ -1,127 +1,59 @@
-class DirectoryPage {
+class ForgotPasswordPage {
   locators = {
-    directoryMenu: 'a[href="/web/index.php/directory/viewDirectory"]',
-    pageTitle: '.oxd-topbar-header-breadcrumb h6',
-    nameInput: 'input[placeholder="Type for hints..."]',
-    jobDropdown: '.oxd-select-text-input',
-    locationDropdown: '.oxd-select-text',
-    searchButton: 'button[type="submit"]',
-    resetButton: 'button[type="button"]',
-    employeeCards: '.oxd-sheet',
-    employeeName: '.orangehrm-directory-card-header',
-    noRecordsMessage: '.orangehrm-horizontal-padding span',
-    autocompleteDropdown: '.oxd-autocomplete-dropdown'
+    usernameInput: 'input[name="username"]',
+    resetButton: 'button[type="submit"]',
+    cancelButton: 'button.oxd-button--ghost',
+    resetTitle: 'h6',
+    successMessage: '.orangehrm-card-container h6',
+    requiredMessage: '.oxd-input-group__message'
   };
 
   visit() {
-    cy.get(this.locators.directoryMenu, { timeout: 10000 })
-      .should('be.visible')
-      .click();
-    
-    cy.url({ timeout: 15000 }).should('include', '/directory/viewDirectory');
-    cy.wait(1000); // Wait for page to stabilize
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/requestPasswordResetCode', {
+      timeout: 30000
+    });
+    cy.url().should('include', '/auth/requestPasswordResetCode');
+    cy.get(this.locators.resetTitle, { timeout: 15000 }).should('be.visible');
+    cy.wait(500);
   }
 
-  fillEmployeeName(name) {
-    if (name) {
-      cy.get(this.locators.nameInput, { timeout: 10000 })
-        .first()
+  fillUsername(username) {
+    if (username) {
+      cy.get(this.locators.usernameInput, { timeout: 10000 })
         .should('be.visible')
         .clear()
-        .type(name);
-      
-      // Wait for autocomplete if it appears
-      cy.wait(1500);
-      
-      // Close autocomplete dropdown by pressing Escape or clicking outside
-      cy.get('body').type('{esc}');
+        .type(username);
     }
-    return this;
-  }
-
-  selectJobTitle(index = 0) {
-    cy.get(this.locators.jobDropdown, { timeout: 10000 })
-      .first()
-      .should('be.visible')
-      .click();
-    
-    cy.get('.oxd-select-dropdown', { timeout: 10000 }).should('be.visible');
-    cy.wait(500);
-    
-    cy.get('.oxd-select-option')
-      .eq(index)
-      .should('be.visible')
-      .click();
-    
-    cy.wait(500);
-    return this;
-  }
-
-  selectLocation(index = 0) {
-    cy.get(this.locators.locationDropdown, { timeout: 10000 })
-      .eq(1)
-      .should('be.visible')
-      .click();
-    
-    cy.get('.oxd-select-dropdown', { timeout: 10000 }).should('be.visible');
-    cy.wait(500);
-    
-    cy.get('.oxd-select-option')
-      .eq(index)
-      .should('be.visible')
-      .click();
-    
-    cy.wait(500);
-    return this;
-  }
-
-  clickSearch() {
-    cy.get(this.locators.searchButton, { timeout: 10000 })
-      .should('be.visible')
-      .click();
-    
-    cy.wait(2000); // Wait for search results to load
     return this;
   }
 
   clickReset() {
     cy.get(this.locators.resetButton, { timeout: 10000 })
-      .contains('Reset')
       .should('be.visible')
       .click();
-    
-    cy.wait(1000);
     return this;
   }
 
-  verifyPageLoaded() {
-    cy.url({ timeout: 15000 }).should('include', '/directory/viewDirectory');
-    cy.contains(this.locators.pageTitle, 'Directory', { timeout: 15000 })
-      .should('be.visible');
-  }
-
-  verifyEmployeeCards() {
-    cy.get(this.locators.employeeCards, { timeout: 15000 })
+  clickCancel() {
+    cy.get(this.locators.cancelButton, { timeout: 10000 })
       .should('be.visible')
-      .and('have.length.greaterThan', 0);
+      .click();
+    return this;
   }
 
-  verifyNoRecords() {
-    cy.contains(this.locators.noRecordsMessage, 'No Records Found', { timeout: 15000 })
-      .should('be.visible');
+  verifyResetPage() {
+    cy.url({ timeout: 10000 }).should('include', '/auth/requestPasswordResetCode');
+    cy.contains(this.locators.resetTitle, 'Reset Password', { timeout: 10000 }).should('be.visible');
   }
 
-  getEmployeeCount() {
-    return cy.get(this.locators.employeeCards, { timeout: 15000 }).its('length');
+  verifySuccessMessage() {
+    cy.url({ timeout: 15000 }).should('include', '/auth/sendPasswordReset');
+    cy.get(this.locators.successMessage, { timeout: 15000 }).should('be.visible');
   }
 
-  verifyEmployeeCardContent() {
-    cy.get(this.locators.employeeCards, { timeout: 15000 })
-      .first()
-      .within(() => {
-        cy.get(this.locators.employeeName).should('be.visible');
-      });
+  verifyRequiredMessage() {
+    cy.contains(this.locators.requiredMessage, 'Required', { timeout: 10000 }).should('be.visible');
   }
 }
 
-export default DirectoryPage;
+export default ForgotPasswordPage;
