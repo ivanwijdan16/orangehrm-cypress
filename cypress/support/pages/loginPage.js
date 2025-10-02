@@ -14,20 +14,29 @@ class LoginPage {
 
   // Actions
   visit() {
-    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
-    cy.get(this.locators.usernameInput).should('be.visible');
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login', {
+      timeout: 30000
+    });
+    
+    // Pastikan URL sudah benar dan page sudah load
+    cy.url().should('include', '/auth/login');
+    cy.get(this.locators.usernameInput, { timeout: 15000 }).should('be.visible');
+    cy.wait(500); // Tunggu sebentar untuk stabilitas
   }
 
   fillUsername(username) {
     if (username) {
-      cy.get(this.locators.usernameInput).type(username);
+      cy.get(this.locators.usernameInput).clear().type(username);
     }
     return this;
   }
 
   fillPassword(password) {
     if (password) {
-      cy.get(this.locators.passwordInput).type(password);
+      cy.get(this.locators.passwordInput).clear().type(password);
     }
     return this;
   }
@@ -61,16 +70,20 @@ class LoginPage {
 
   // Assertions
   verifyDashboardVisible() {
-    cy.url().should('include', '/dashboard');
-    cy.contains(this.locators.dashboardTitle, 'Dashboard').should('be.visible');
+    cy.url({ timeout: 15000 }).should('include', '/dashboard');
+    cy.contains(this.locators.dashboardTitle, 'Dashboard', { timeout: 15000 })
+      .should('be.visible');
   }
 
   verifyInvalidCredentialsMessage() {
-    cy.get(this.locators.alertMessage).should('contain.text', 'Invalid credentials');
+    cy.get(this.locators.alertMessage, { timeout: 10000 })
+      .should('be.visible')
+      .and('contain.text', 'Invalid credentials');
   }
 
   verifyRequiredFieldMessage() {
-    cy.contains(this.locators.requiredMessage, 'Required').should('be.visible');
+    cy.contains(this.locators.requiredMessage, 'Required', { timeout: 10000 })
+      .should('be.visible');
   }
 
   verifyResetPasswordPage() {
